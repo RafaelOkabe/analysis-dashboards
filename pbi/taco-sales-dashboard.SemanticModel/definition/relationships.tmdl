@@ -1,0 +1,4 @@
+relationship a4b5d1cb-e889-b73d-f93c-73f3adb64a34
+	fromColumn: taco_sales.'Order Date'
+	toColumn: dCalendario.Date
+

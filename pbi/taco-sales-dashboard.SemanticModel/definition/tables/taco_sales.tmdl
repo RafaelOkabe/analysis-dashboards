@@ -1,6 +1,20 @@
 table taco_sales
 	lineageTag: 206a37a5-ff05-4b73-a89c-e2c7752c6328
 
+	measure 'Tot. Amount' = SUM(taco_sales[Price ($)]) + SUM(taco_sales[Tip ($)])
+		formatString: 0
+		lineageTag: 9f56f2c8-6a54-4be1-aa8b-ccffea70dcc7
+
+	measure 'Avg. Taco Price' =
+			
+			DIVIDE(
+			    SUM(taco_sales[Price ($)]),
+			    COUNT(taco_sales[Order ID])
+			)
+		lineageTag: 56617358-8eba-418a-a157-f46ee7ed4534
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column 'Order ID'
 		dataType: int64
 		formatString: 0
