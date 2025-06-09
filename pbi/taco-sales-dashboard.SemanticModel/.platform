@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "taco-sales-dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a20aa7d9-d1c3-4673-911f-f2e8f7e63af9"
+  }
+}

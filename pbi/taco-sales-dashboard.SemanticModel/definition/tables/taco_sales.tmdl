@@ -1,0 +1,145 @@
+table taco_sales
+	lineageTag: 206a37a5-ff05-4b73-a89c-e2c7752c6328
+
+	column 'Order ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: c2a64e1c-33ed-4a91-b8e9-49f649e34c90
+		summarizeBy: count
+		sourceColumn: Order ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Restaurant Name'
+		dataType: string
+		lineageTag: d79c1f1e-011d-4f6e-8dbe-c402e41a5a68
+		summarizeBy: none
+		sourceColumn: Restaurant Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Location
+		dataType: string
+		lineageTag: 620a9494-2a43-4bf6-872c-4a9204b87621
+		summarizeBy: none
+		sourceColumn: Location
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Time'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 462f7b75-645c-4cd2-b915-a09e5fcdb8c4
+		summarizeBy: none
+		sourceColumn: Order Time
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Delivery Time'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1e8604d5-af1a-4bc3-b3a2-29f0d243cb75
+		summarizeBy: none
+		sourceColumn: Delivery Time
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Delivery Duration (min)'
+		dataType: int64
+		formatString: 0
+		lineageTag: d4467687-aa33-4819-b503-814a1fd4dad2
+		summarizeBy: sum
+		sourceColumn: Delivery Duration (min)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Taco Size'
+		dataType: string
+		lineageTag: 79e25f2d-d1e6-454f-92bd-03796210bf4f
+		summarizeBy: none
+		sourceColumn: Taco Size
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Taco Type'
+		dataType: string
+		lineageTag: 1da38836-a1f0-4255-9343-7a99938c0d80
+		summarizeBy: none
+		sourceColumn: Taco Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Toppings Count'
+		dataType: int64
+		formatString: 0
+		lineageTag: b4b6457e-3f23-463c-9407-9a0e129c1fc6
+		summarizeBy: sum
+		sourceColumn: Toppings Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Distance (km)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 3565d62a-81c7-499c-87e0-50c6569febba
+		summarizeBy: sum
+		sourceColumn: Distance (km)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Price ($)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0509ab70-4ce4-421a-ad6e-15f5300e7265
+		summarizeBy: sum
+		sourceColumn: Price ($)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tip ($)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 792db4e0-27df-46c5-b84c-ffc8d39d65b6
+		summarizeBy: sum
+		sourceColumn: Tip ($)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekend Order'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 309e3c2a-d507-499f-9a64-d5632ee39da2
+		summarizeBy: none
+		sourceColumn: Weekend Order
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b586711a-0363-4a5e-95ae-3647c0edb32c
+		summarizeBy: none
+		sourceColumn: Order Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition taco_sales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("G:\Meu Drive\Projetos\AnalyticsProjects\analysis-dashboards\taco_sales_(2024-2025).csv"),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Order ID", Int64.Type}, {"Restaurant Name", type text}, {"Location", type text}, {"Order Time", type datetime}, {"Delivery Time", type datetime}, {"Delivery Duration (min)", Int64.Type}, {"Taco Size", type text}, {"Taco Type", type text}, {"Toppings Count", Int64.Type}, {"Distance (km)", Int64.Type}, {"Price ($)", Int64.Type}, {"Tip ($)", Int64.Type}, {"Weekend Order", type logical}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each [Order ID] <> null and [Order ID] <> ""),
+				    #"Duplicated Column" = Table.DuplicateColumn(#"Filtered Rows", "Order Time", "Order Time - Copy"),
+				    #"Extracted Date" = Table.TransformColumns(#"Duplicated Column",{{"Order Time - Copy", DateTime.Date, type date}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Extracted Date",{{"Order Time - Copy", "Order Date"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

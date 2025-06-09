@@ -1,0 +1,9 @@
+Amarelo dourado (#FFC107) – Destaque vibrante, remetendo à cor da massa de taco.
+
+Vermelho picante (#D32F2F) – Representa o tempero e o calor dos ingredientes.
+
+Verde fresco (#388E3C) – Remete à guacamole, alface e frescor dos toppings.
+
+Marrom terroso (#5D4037) – Simboliza o taco crocante e elementos rústicos.
+
+Bege suave (#F5E3C3) – Fundo neutro para complementar os tons mais vivos.

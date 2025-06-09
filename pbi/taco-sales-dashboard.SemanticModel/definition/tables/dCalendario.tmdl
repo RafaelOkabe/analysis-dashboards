@@ -1,0 +1,116 @@
+table dCalendario
+	lineageTag: ad07a4ef-fc94-4763-97fb-4a8802672bb7
+
+	column Data
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 874203c7-f36c-4bfa-9325-4052de5b81dd
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 8c5700c3-4ccf-46fa-8e2d-be18b27bf8f6
+		summarizeBy: sum
+		sourceColumn: Ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e998da4-d8e0-497c-9fda-761466e3a11e
+		summarizeBy: sum
+		sourceColumn: Mês
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Mês'
+		dataType: string
+		lineageTag: 782d76e6-e473-4180-89a5-5beed0c1427b
+		summarizeBy: none
+		sourceColumn: Nome Mês
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dia
+		dataType: int64
+		formatString: 0
+		lineageTag: f1bd0f10-725e-4f8b-953c-0cf25a3125db
+		summarizeBy: sum
+		sourceColumn: Dia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia da Semana'
+		dataType: int64
+		formatString: 0
+		lineageTag: 625fa068-a063-4cc7-a500-729c1456d013
+		summarizeBy: sum
+		sourceColumn: Dia da Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Dia da Semana'
+		dataType: string
+		lineageTag: db08175f-c2c3-42f0-ba7b-62cba80c88a5
+		summarizeBy: none
+		sourceColumn: Nome do Dia da Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: int64
+		formatString: 0
+		lineageTag: efc950e8-ceb8-4a55-bb8d-4f4afce301a5
+		summarizeBy: sum
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês-Ano
+		dataType: string
+		lineageTag: efef01b4-c998-43ed-9b1c-36f529b16c1e
+		summarizeBy: none
+		sourceColumn: Mês-Ano
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendario = m
+		mode: import
+		source =
+				let
+				    // Obtém a menor data da coluna OrderTime
+				    DataMin = Date.From(List.Min(taco_sales[Order Time])),
+				
+				    // Obtém a maior data da coluna OrderTime
+				    DataMax = Date.From(List.Max(taco_sales[Order Time])),
+				
+				    // Cria uma lista de datas entre a menor e a maior
+				    ListaDatas = List.Dates(DataMin, Duration.Days(DataMax - DataMin) + 1, #duration(1,0,0,0)),
+				
+				    // Converte a lista em uma tabela
+				    TabelaDatas = Table.FromList(ListaDatas, Splitter.SplitByNothing(), {"Data"}),
+				
+				    // Adiciona colunas de atributos de data
+				    TipoData = Table.TransformColumnTypes(TabelaDatas,{{"Data", type date}}),
+				    Ano = Table.AddColumn(TipoData, "Ano", each Date.Year([Data]), Int64.Type),
+				    Mês = Table.AddColumn(Ano, "Mês", each Date.Month([Data]), Int64.Type),
+				    NomeMês = Table.AddColumn(Mês, "Nome Mês", each Date.ToText([Data], "MMMM"), type text),
+				    Dia = Table.AddColumn(NomeMês, "Dia", each Date.Day([Data]), Int64.Type),
+				    DiaSemana = Table.AddColumn(Dia, "Dia da Semana", each Date.DayOfWeek([Data]), Int64.Type),
+				    NomeDiaSemana = Table.AddColumn(DiaSemana, "Nome do Dia da Semana", each Date.ToText([Data], "dddd"), type text),
+				    Trimestre = Table.AddColumn(NomeDiaSemana, "Trimestre", each Date.QuarterOfYear([Data]), Int64.Type),
+				    MêsAno = Table.AddColumn(Trimestre, "Mês-Ano", each Date.ToText([Data], "MMM yyyy"), type text)
+				in
+				    MêsAno
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
