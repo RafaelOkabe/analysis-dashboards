@@ -1,89 +1,96 @@
 table dCalendario
 	lineageTag: ad07a4ef-fc94-4763-97fb-4a8802672bb7
 
-	column Data
+	column Date
 		dataType: dateTime
-		formatString: Long Date
-		lineageTag: 874203c7-f36c-4bfa-9325-4052de5b81dd
+		formatString: yyyy-mm-dd
+		lineageTag: 90be3ee1-dfa4-4c42-a141-87292755546b
 		summarizeBy: none
-		sourceColumn: Data
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: b5dfb5a4-d384-48d3-b61d-9eabd2a40b8e
+			defaultHierarchy: LocalDateTable_9e72dd6e-dc9e-4281-9a2e-998f5103695f.'Date Hierarchy'
 
 		annotation SummarizationSetBy = Automatic
 
 		annotation UnderlyingDateTimeDataType = Date
 
-	column Ano
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Year
 		dataType: int64
 		formatString: 0
-		lineageTag: 8c5700c3-4ccf-46fa-8e2d-be18b27bf8f6
+		lineageTag: 5043400d-993d-4960-ac8d-faaa0dea676e
 		summarizeBy: sum
-		sourceColumn: Ano
+		sourceColumn: Year
 
 		annotation SummarizationSetBy = Automatic
 
-	column Mês
+	column Month
 		dataType: int64
 		formatString: 0
-		lineageTag: 5e998da4-d8e0-497c-9fda-761466e3a11e
+		lineageTag: e3ac0f73-1c6d-4ffe-ad1c-4f37ba431868
 		summarizeBy: sum
-		sourceColumn: Mês
+		sourceColumn: Month
 
 		annotation SummarizationSetBy = Automatic
 
-	column 'Nome Mês'
+	column MonthName
 		dataType: string
-		lineageTag: 782d76e6-e473-4180-89a5-5beed0c1427b
+		lineageTag: 48149d0f-c3fd-42a7-b9d3-127fd7389825
 		summarizeBy: none
-		sourceColumn: Nome Mês
+		sourceColumn: MonthName
 
 		annotation SummarizationSetBy = Automatic
 
-	column Dia
+	column Day
 		dataType: int64
 		formatString: 0
-		lineageTag: f1bd0f10-725e-4f8b-953c-0cf25a3125db
+		lineageTag: 37f89ade-9e92-474d-957d-22894648516e
 		summarizeBy: sum
-		sourceColumn: Dia
+		sourceColumn: Day
 
 		annotation SummarizationSetBy = Automatic
 
-	column 'Dia da Semana'
+	column DayWeek
 		dataType: int64
 		formatString: 0
-		lineageTag: 625fa068-a063-4cc7-a500-729c1456d013
+		lineageTag: 38a14805-20b2-4d9e-9dd9-d75e4610e642
 		summarizeBy: sum
-		sourceColumn: Dia da Semana
+		sourceColumn: DayWeek
 
 		annotation SummarizationSetBy = Automatic
 
-	column 'Nome do Dia da Semana'
+	column DayWeekName
 		dataType: string
-		lineageTag: db08175f-c2c3-42f0-ba7b-62cba80c88a5
+		lineageTag: 472fcd7c-9626-4a16-849a-e8c6760abe03
 		summarizeBy: none
-		sourceColumn: Nome do Dia da Semana
+		sourceColumn: DayWeekName
 
 		annotation SummarizationSetBy = Automatic
 
-	column Trimestre
+	column Quarter
 		dataType: int64
 		formatString: 0
-		lineageTag: efc950e8-ceb8-4a55-bb8d-4f4afce301a5
+		lineageTag: bdc5c5c6-2fc9-4256-a42b-13796e76f390
 		summarizeBy: sum
-		sourceColumn: Trimestre
+		sourceColumn: Quarter
 
 		annotation SummarizationSetBy = Automatic
 
-	column Mês-Ano
+	column MonthYear
 		dataType: string
-		lineageTag: efef01b4-c998-43ed-9b1c-36f529b16c1e
+		lineageTag: 27a18fc4-1b80-4829-8210-0364ab25d381
 		summarizeBy: none
-		sourceColumn: Mês-Ano
+		sourceColumn: MonthYear
 
 		annotation SummarizationSetBy = Automatic
 
 	partition dCalendario = m
 		mode: import
-		source =
+		source = ```
 				let
 				    // Obtém a menor data da coluna OrderTime
 				    DataMin = Date.From(List.Min(taco_sales[Order Time])),
@@ -95,20 +102,21 @@ table dCalendario
 				    ListaDatas = List.Dates(DataMin, Duration.Days(DataMax - DataMin) + 1, #duration(1,0,0,0)),
 				
 				    // Converte a lista em uma tabela
-				    TabelaDatas = Table.FromList(ListaDatas, Splitter.SplitByNothing(), {"Data"}),
-				
+				    TabelaDatas = Table.FromList(ListaDatas, Splitter.SplitByNothing(), {"Date"}),
+				    
 				    // Adiciona colunas de atributos de data
-				    TipoData = Table.TransformColumnTypes(TabelaDatas,{{"Data", type date}}),
-				    Ano = Table.AddColumn(TipoData, "Ano", each Date.Year([Data]), Int64.Type),
-				    Mês = Table.AddColumn(Ano, "Mês", each Date.Month([Data]), Int64.Type),
-				    NomeMês = Table.AddColumn(Mês, "Nome Mês", each Date.ToText([Data], "MMMM"), type text),
-				    Dia = Table.AddColumn(NomeMês, "Dia", each Date.Day([Data]), Int64.Type),
-				    DiaSemana = Table.AddColumn(Dia, "Dia da Semana", each Date.DayOfWeek([Data]), Int64.Type),
-				    NomeDiaSemana = Table.AddColumn(DiaSemana, "Nome do Dia da Semana", each Date.ToText([Data], "dddd"), type text),
-				    Trimestre = Table.AddColumn(NomeDiaSemana, "Trimestre", each Date.QuarterOfYear([Data]), Int64.Type),
-				    MêsAno = Table.AddColumn(Trimestre, "Mês-Ano", each Date.ToText([Data], "MMM yyyy"), type text)
+				    TipoData = Table.TransformColumnTypes(TabelaDatas,{{"Date", type date}}),
+				    Year = Table.AddColumn(TipoData, "Year", each Date.Year([Date]), Int64.Type),
+				    Month = Table.AddColumn(Year, "Month", each Date.Month([Date]), Int64.Type),
+				    MonthName = Table.AddColumn(Month, "MonthName", each Date.ToText([Date], "MMMM", "en-US"), type text),
+				    Day = Table.AddColumn(MonthName, "Day", each Date.Day([Date]), Int64.Type),
+				    DayWeek = Table.AddColumn(Day, "DayWeek", each Date.DayOfWeek([Date]), Int64.Type),
+				    DayWeekName = Table.AddColumn(DayWeek, "DayWeekName", each Date.ToText([Date], "dddd", "en-US"), type text),
+				    Quarter = Table.AddColumn(DayWeekName, "Quarter", each Date.QuarterOfYear([Date]), Int64.Type),
+				    MonthYear = Table.AddColumn(Quarter, "MonthYear", each Date.ToText([Date], "MMM yyyy", "en-US"), type text)
 				in
-				    MêsAno
+				    MonthYear
+				```
 
 	annotation PBI_NavigationStepName = Navigation
 
