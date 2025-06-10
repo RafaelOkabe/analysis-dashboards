@@ -3,20 +3,27 @@ table dCalendario
 
 	column Date
 		dataType: dateTime
-		formatString: Long Date
+		formatString: yyyy-mm-dd
 		lineageTag: 90be3ee1-dfa4-4c42-a141-87292755546b
 		summarizeBy: none
 		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: b5dfb5a4-d384-48d3-b61d-9eabd2a40b8e
+			defaultHierarchy: LocalDateTable_9e72dd6e-dc9e-4281-9a2e-998f5103695f.'Date Hierarchy'
 
 		annotation SummarizationSetBy = Automatic
 
 		annotation UnderlyingDateTimeDataType = Date
 
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
 	column Year
 		dataType: int64
 		formatString: 0
 		lineageTag: 5043400d-993d-4960-ac8d-faaa0dea676e
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Year
 
 		annotation SummarizationSetBy = Automatic
@@ -25,7 +32,7 @@ table dCalendario
 		dataType: int64
 		formatString: 0
 		lineageTag: e3ac0f73-1c6d-4ffe-ad1c-4f37ba431868
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Month
 
 		annotation SummarizationSetBy = Automatic
@@ -42,7 +49,7 @@ table dCalendario
 		dataType: int64
 		formatString: 0
 		lineageTag: 37f89ade-9e92-474d-957d-22894648516e
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Day
 
 		annotation SummarizationSetBy = Automatic
@@ -51,7 +58,7 @@ table dCalendario
 		dataType: int64
 		formatString: 0
 		lineageTag: 38a14805-20b2-4d9e-9dd9-d75e4610e642
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: DayWeek
 
 		annotation SummarizationSetBy = Automatic
@@ -68,7 +75,7 @@ table dCalendario
 		dataType: int64
 		formatString: 0
 		lineageTag: bdc5c5c6-2fc9-4256-a42b-13796e76f390
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Quarter
 
 		annotation SummarizationSetBy = Automatic

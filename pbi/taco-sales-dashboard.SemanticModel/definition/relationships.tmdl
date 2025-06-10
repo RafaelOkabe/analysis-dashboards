@@ -2,3 +2,18 @@ relationship a4b5d1cb-e889-b73d-f93c-73f3adb64a34
 	fromColumn: taco_sales.'Order Date'
 	toColumn: dCalendario.Date
 
+relationship e4d50c7c-0771-4a79-96e2-a9096aee881b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: taco_sales.'Order Time'
+	toColumn: LocalDateTable_0c257f6d-a466-48b9-bedb-8eae30e682ba.Date
+
+relationship e31e19e2-8965-4202-a789-fb3d7199a9bc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: taco_sales.'Delivery Time'
+	toColumn: LocalDateTable_c46a146b-03c1-4dc6-bf5a-da9301f1e57c.Date
+
+relationship b5dfb5a4-d384-48d3-b61d-9eabd2a40b8e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendario.Date
+	toColumn: LocalDateTable_9e72dd6e-dc9e-4281-9a2e-998f5103695f.Date
+

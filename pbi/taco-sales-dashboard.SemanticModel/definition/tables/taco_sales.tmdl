@@ -47,6 +47,11 @@ table taco_sales
 		summarizeBy: none
 		sourceColumn: Order Time
 
+		variation Variation
+			isDefault
+			relationship: e4d50c7c-0771-4a79-96e2-a9096aee881b
+			defaultHierarchy: LocalDateTable_0c257f6d-a466-48b9-bedb-8eae30e682ba.'Date Hierarchy'
+
 		annotation SummarizationSetBy = Automatic
 
 	column 'Delivery Time'
@@ -55,6 +60,11 @@ table taco_sales
 		lineageTag: 1e8604d5-af1a-4bc3-b3a2-29f0d243cb75
 		summarizeBy: none
 		sourceColumn: Delivery Time
+
+		variation Variation
+			isDefault
+			relationship: e31e19e2-8965-4202-a789-fb3d7199a9bc
+			defaultHierarchy: LocalDateTable_c46a146b-03c1-4dc6-bf5a-da9301f1e57c.'Date Hierarchy'
 
 		annotation SummarizationSetBy = Automatic
 
